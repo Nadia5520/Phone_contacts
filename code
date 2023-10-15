@@ -1,0 +1,393 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+// the Contact list that has the MAIN function IN
+class Contact_List {
+    private static ArrayList<Contact> contacts;
+
+    public Contact_List() {
+        contacts = new ArrayList<>();
+    }
+    //ADDING CONTACTS
+    public void addContact(Contact contact) {
+        contacts.add(contact);
+    }
+    // function for viewing the contacts added
+    public void viewContacts() {
+        for (Contact contact : contacts) {
+            System.out.println(contact);
+        }
+    }
+    //function that returns a list of all matches of the given name
+    public ArrayList<Contact> searchContacts(String name) {
+        ArrayList<Contact> searchResult = new ArrayList<>();
+        for (Contact contact : contacts) {
+            if (contact.getName().equals(name)) {
+                searchResult.add(contact);
+            }
+        }
+        return searchResult;
+    }
+    //function that returns a singe contact that matches the given name
+    public Contact getContactByName(String name) {
+        for (Contact contact : contacts) {
+            if (contact.getName().equals(name)) {
+                return contact;
+            }
+        }
+        return null;
+    }
+    //Func to edit Contacts
+    public void editContact(String name, String newName, String newNumber) {
+        Contact contactToEdit = getContactByName(name);
+        if (contactToEdit != null) {
+            contactToEdit.setName(newName);
+            contactToEdit.setNumber(newNumber);
+            System.out.println("Contact updated successfully.");
+        } else {
+            System.out.println("Contact not found.");
+        }
+    }
+    // Function to delete a contact
+    public void deleteContact(String deleteName) {
+        Contact contactToDelete = getContactByName(deleteName);
+        if (contactToDelete == null) {
+            System.out.println("Contact not found.");
+        } else {
+            contacts.remove(contactToDelete);
+            System.out.println("Contact deleted successfully.");
+        }
+    }
+    // Function to make as favourite
+    public void markAsFavorite(String name) {
+        Contact contact = getContactByName(name);
+        if (contact != null) {
+            contact.setFavorite(true);
+            System.out.println("Contact marked as favorite.");
+        } else {
+            System.out.println("Contact not found.");
+        }
+    }
+    // Function to create the reminder
+    public void createReminder(String name, String reminder) {
+        Contact contact = getContactByName(name);
+        if (contact != null) {
+            contact.addReminder(reminder);
+            System.out.println("Reminder added successfully.");
+        } else {
+            System.out.println("Contact not found.");
+        }
+    }
+    // function for filtering by categories
+    public ArrayList<Contact> filterByCategory(String category) {
+        ArrayList<Contact> filteredContacts = new ArrayList<>();
+        for (Contact contact : contacts) {
+            if (contact.getCategory().equalsIgnoreCase(category)) {
+                filteredContacts.add(contact);
+            }
+        }
+        return filteredContacts;
+    }
+    //SORTING
+    public static void sortContactsAlphabetically() {
+        for (int i = 0; i < contacts.size() - 1; i++) {
+            for (int j = i + 1; j < contacts.size(); j++) {
+                Contact contact1 = contacts.get(i);
+                Contact contact2 = contacts.get(j);
+
+                if (contact1.getName().compareToIgnoreCase(contact2.getName()) > 0) {
+                    // Swap contacts
+                    contacts.set(i, contact2);
+                    contacts.set(j, contact1);
+                }
+            }
+        }
+        System.out.println(contacts);
+    }
+    //merge duplicates
+    public static void mergeDuplicates()
+    {
+        ArrayList<Contact> unique_contact = new ArrayList<>();
+        for (int i = 0; i < contacts.size(); i++)
+        {
+            Contact currentContact = contacts.get(i);
+            boolean duplicateFound = false;
+            for (int j = 0; j < unique_contact.size(); j++) {
+                Contact uniqueContact = unique_contact.get(j);
+                if (currentContact.getName().equalsIgnoreCase(uniqueContact.getName())) {
+                    duplicateFound = true;
+                    break;
+                }
+            }
+            if (!duplicateFound) {
+                unique_contact.add(currentContact);
+            }
+        }
+
+        contacts = unique_contact;
+        System.out.println(contacts);
+    }
+
+    //the function for filtering by tags
+    public ArrayList<Contact> filterByTag(String tag) {
+        ArrayList<Contact> filteredContacts = new ArrayList<>();
+        for (Contact contact : contacts) {
+            if (contact.getTags().contains(tag)) {
+                filteredContacts.add(contact);
+            }
+        }
+        return filteredContacts;
+    }
+    //if the user wants to add notes
+    public void addNoteToContact(String name, String note) {
+        Contact contact = getContactByName(name);
+        if (contact != null) {
+            contact.addNote(note);
+            System.out.println("Note added successfully.");
+        } else {
+            System.out.println("Contact not found.");
+        }
+    }
+    //Main function
+    public static void main(String[] args) {
+        Contact_List contactList = new Contact_List();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("1. Add Contact");
+            System.out.println("2. View Contacts");
+            System.out.println("3. Search Contacts");
+            System.out.println("4. Edit Contact");
+            System.out.println("5. Delete Contact");
+            System.out.println("6. Mark as Favorite");
+            System.out.println("7. Create Reminder");
+            System.out.println("8. Filter by Category");
+            System.out.println("9. Filter by Tag");
+            System.out.println("10. Add Note to Contact");
+            System.out.println("11. Sharing contact");
+            System.out.println("12. Merging");
+            System.out.println("13. Sorting");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            // based on the choice of what the user needs to do,
+            switch (choice) {
+                //adding a new contact
+                case 1:
+                    System.out.print("Enter contact name: ");
+                    String name = scanner.next();
+                    System.out.print("Enter contact number: ");
+                    String number = scanner.next();
+                    System.out.println("Enter contact email: ");
+                    String email = scanner.next();
+                    System.out.print("Enter contact category: ");
+                    String category = scanner.next();
+                    System.out.print("Enter contact labels: ");
+                    String labels = scanner.next();
+                    System.out.print("Enter contact tags: ");
+                    String tags = scanner.next();
+                    Contact newContact = new Contact(name, number, email,category, labels, tags);
+                    contactList.addContact(newContact);
+                    System.out.println("Contact added successfully.");
+                    break;
+                    //viewing contacts
+                case 2:
+                    contactList.viewContacts();
+                    break;
+                    //searching for a contact
+                case 3:
+                    System.out.print("Enter search criteria (name): ");
+                    String searchCriteria = scanner.next();
+                    ArrayList<Contact> searchResults = contactList.searchContacts(searchCriteria);
+                    if (searchResults.isEmpty()) {
+                        System.out.println("No contacts found.");
+                    } else {
+                        System.out.println("Searchresults:");
+                        for (Contact contact : searchResults) {
+                            System.out.println(contact);
+                        }
+                    }
+                    break;
+                    //editing a contact
+                case 4:
+                    System.out.print("Enter contact name to edit: ");
+                    String editName = scanner.next();
+                    System.out.print("Enter new name: ");
+                    String newName = scanner.next();
+                    System.out.print("Enter new number: ");
+                    String newNumber = scanner.next();
+                    contactList.editContact(editName, newName, newNumber);
+                    break;
+                    //deleting a contact
+                case 5:
+                    System.out.print("Enter contact name to delete: ");
+                    String deleteName = scanner.next();
+                    contactList.deleteContact(deleteName);
+                    break;
+                    //check if favourite or not
+                case 6:
+                    System.out.print("Enter contact name to mark as favorite: ");
+                    String favoriteName = scanner.next();
+                    contactList.markAsFavorite(favoriteName);
+                    break;
+                    // creating a reminder
+                case 7:
+                    System.out.print("Enter contact name to create a reminder: ");
+                    String reminderName = scanner.next();
+                    System.out.print("Enter reminder text: ");
+                    String reminderText = scanner.next();
+                    contactList.createReminder(reminderName, reminderText);
+                    break;
+                    // filtering contacts by categories
+                case 8:
+                    System.out.print("Enter category to filter contacts: ");
+                    String filterCategory = scanner.next();
+                    ArrayList<Contact> filteredByCategory = contactList.filterByCategory(filterCategory);
+                    if (filteredByCategory.isEmpty()) {
+                        System.out.println("No contacts found in the specified category.");
+                    } else {
+                        System.out.println("Filtered contacts:");
+                        for (Contact contact : filteredByCategory) {
+                            System.out.println(contact);
+                        }
+                    }
+                    break;
+                    //filtering contacts by tags
+                case 9:
+                    System.out.print("Enter tag to filter contacts: ");
+                    String filterTag = scanner.next();
+                    ArrayList<Contact> filteredByTag = contactList.filterByTag(filterTag);
+                    if (filteredByTag.isEmpty()) {
+                        System.out.println("No contacts found with the specified tag.");
+                    } else {
+                        System.out.println("Filtered contacts:");
+                        for (Contact contact : filteredByTag) {
+                            System.out.println(contact);
+                        }
+                    }
+                    break;
+                    //adding notes
+                case 10:
+                    System.out.print("Enter contact name to add a note: ");
+                    String noteName = scanner.next();
+                    System.out.print("Enter note: ");
+                    String noteText = scanner.next();
+                    contactList.addNoteToContact(noteName, noteText);
+                    break;
+                    //shared contact
+                case 11:
+                    System.out.println("Enter the name of the contact you want to share: ");
+                    String sharedContact = scanner.next();
+                    if(sharedContact == null)
+                        System.out.println("Contact not found! ");
+                    else
+                        System.out.println(sharedContact);
+                    //for merging
+                case 12:
+                    mergeDuplicates();
+                    //for sorting
+                case 13:
+                    sortContactsAlphabetically();
+                    //exiting
+                case 14:
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+            System.out.println();
+        }
+    }
+}
+
+class Contact {
+    private String name;
+    private String number;
+    private String email;
+    private String category;
+    private String labels;
+    private ArrayList<String> tags;
+    private boolean favorite;
+    private ArrayList<String> reminders;
+    private ArrayList<String> notes;
+
+    public Contact(String name, String number,String email, String category, String labels, String tags) {
+        this.name = name;
+        this.number = number;
+        this.email = email;
+        this.category = category;
+        this.labels = labels;
+        this.tags = new ArrayList<>();
+        String[] tagArray = tags.split(",");
+        for (String tag : tagArray) {
+            this.tags.add(tag.trim());
+        }
+        this.favorite = false;
+        this.reminders = new ArrayList<>();
+        this.notes = new ArrayList<>();
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getLabels() {
+        return labels;
+    }
+
+    public void setLabels(String labels) {
+        this.labels = labels;
+    }
+
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public void addReminder(String reminder) {
+        reminders.add(reminder);
+    }
+
+    public void addNote(String note) {
+        notes.add(note);
+    }
+
+    @Override
+    public String toString() {
+        return ("Name: " + name + ", Number: " + number + ", Category: " + category + ", Labels: " + labels + ", Tags: " + tags);
+    }
+}
